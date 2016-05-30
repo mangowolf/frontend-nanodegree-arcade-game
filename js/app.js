@@ -20,7 +20,7 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x = this.x + 200 * dt;
+    this.x = this.x + Math.floor((Math.random() * 800) + 1) * dt;
     this.y;
 };
 
@@ -41,11 +41,32 @@ var player = function(x,y){
 }
 
 player.prototype.update = function(dt){
-
+	player.handleInput();
 };
 
 player.prototype.render = function(){
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+player.prototype.handleInput = function(allowedKeys){
+	switch(allowedKeys){
+		case 'left':
+		this.x -= 100;
+		//return this.x;
+		break;
+
+		case 'up':
+		this.y -= 85;
+		break;
+
+		case 'right':
+		this.x += 100;
+		break;
+
+		case 'down':
+		this.y += 85;
+		break;
+	};
 };
 
 
@@ -53,7 +74,11 @@ player.prototype.render = function(){
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-var allEnemies = [new Enemy(1,60), new Enemy(100,140)];
+var allEnemies = [];
+var length = Math.floor(Math.random() * 20) + 2;
+for(i=0; i < length; i++){
+	allEnemies.push(new Enemy(Math.floor(Math.random() * 800) - 1000,Math.floor(Math.random() * 240) + 0));
+};
 var player = new player(200,380);
 
 
