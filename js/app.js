@@ -8,6 +8,10 @@ var Enemy = function(x,y) {
     /*var obj = Object.create(Enemy.prototype);
     obj.x = x;
     obj.y = y;*/
+    var w = 40;
+    var h = 40;
+    this.width = w;
+    this.height = h;
     this.sprite = 'images/enemy-bug.png';
     this.x = x;
     this.y = y;
@@ -20,7 +24,7 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x = this.x + Math.floor((Math.random() * 800) + 1) * dt;
+    this.x = this.x + Math.floor(((Math.random() * 350) + 1) * dt);
     this.y;
 };
 
@@ -33,8 +37,11 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var player = function(x,y){
-
+	var w = 40;
+	var h = 40;
 	//load character sprite using helper
+	this.width = w;
+	this.height = h;
 	this.sprite = 'images/char-boy.png';
 	this.x = x;
 	this.y = y;
@@ -42,6 +49,7 @@ var player = function(x,y){
 
 player.prototype.update = function(dt){
 	player.handleInput();
+	collision();
 };
 
 player.prototype.render = function(){
@@ -75,9 +83,9 @@ player.prototype.handleInput = function(allowedKeys){
 // Place the player object in a variable called player
 
 var allEnemies = [];
-var length = Math.floor(Math.random() * 20) + 2;
+var length = Math.floor(Math.random() * 130);
 for(i=0; i < length; i++){
-	allEnemies.push(new Enemy(Math.floor(Math.random() * 800) - 1000,Math.floor(Math.random() * 240) + 0));
+	allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1,Math.floor(Math.random() * 240)));
 };
 var player = new player(200,380);
 
@@ -94,3 +102,22 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+//Collision Detection
+var collision = function(){
+
+	for (var i=0; i<allEnemies.length; i++){
+
+		if(player.x < allEnemies[i].x + allEnemies[i].width &&
+			player.x + player.width > allEnemies[i].x &&
+			player.y < allEnemies[i].y + allEnemies[i].height &&
+			player.height + player.y > allEnemies[i].y){
+			console.log('Collision Detected!');
+		};
+	};
+}
+
+
+/*while (player.y<0){
+	allEnemies.push(new Enemy(Math.floor(Math.random() * 800) - 1000,Math.floor(Math.random() * 240) + 0));
+};*/
