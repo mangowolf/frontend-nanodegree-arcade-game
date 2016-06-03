@@ -49,7 +49,7 @@ var player = function(x,y){
 
 player.prototype.update = function(dt){
 	player.handleInput();
-	collision();
+	player.reset();
 };
 
 player.prototype.render = function(){
@@ -59,24 +59,43 @@ player.prototype.render = function(){
 player.prototype.handleInput = function(allowedKeys){
 	switch(allowedKeys){
 		case 'left':
-		this.x -= 100;
-		//return this.x;
+		if(this.x > 0){
+			this.x -= 100;
+		};
 		break;
 
 		case 'up':
-		this.y -= 85;
+		if(this.y > 0){
+			this.y -= 85;
+		};
 		break;
 
 		case 'right':
-		this.x += 100;
+		if(this.x < 400){
+			this.x += 100;
+		};
 		break;
 
 		case 'down':
-		this.y += 85;
+		if(this.y < 300){
+			this.y += 85;
+		};
 		break;
 	};
 };
 
+player.prototype.reset = function(){
+	var winY = -45;
+	if(this.y === winY){
+		this.x = initialX;
+		this.y = initialY;
+		alert('Congratulations, you won!')
+	}
+	else if(collision()){
+		this.x = initialX;
+		this.y = initialY;
+	};
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
@@ -85,9 +104,11 @@ player.prototype.handleInput = function(allowedKeys){
 var allEnemies = [];
 var length = Math.floor(Math.random() * 130);
 for(i=0; i < length; i++){
-	allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1,Math.floor(Math.random() * 240)));
+	allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1,Math.floor(Math.random() * 200) + 40));
 };
-var player = new player(200,380);
+var initialX = 200;
+var initialY = 380;
+var player = new player(initialX,initialY);
 
 
 // This listens for key presses and sends the keys to your
@@ -112,12 +133,8 @@ var collision = function(){
 			player.x + player.width > allEnemies[i].x &&
 			player.y < allEnemies[i].y + allEnemies[i].height &&
 			player.height + player.y > allEnemies[i].y){
-			console.log('Collision Detected!');
+			alert('Game Over!');
+			return true;
 		};
 	};
 }
-
-
-/*while (player.y<0){
-	allEnemies.push(new Enemy(Math.floor(Math.random() * 800) - 1000,Math.floor(Math.random() * 240) + 0));
-};*/
