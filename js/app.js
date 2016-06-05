@@ -5,9 +5,6 @@ var Enemy = function(x,y) {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    /*var obj = Object.create(Enemy.prototype);
-    obj.x = x;
-    obj.y = y;*/
     var w = 40;
     var h = 40;
     this.width = w;
@@ -15,7 +12,6 @@ var Enemy = function(x,y) {
     this.sprite = 'images/enemy-bug.png';
     this.x = x;
     this.y = y;
-    //return obj;
 };
 
 // Update the enemy's position, required method for game
@@ -24,7 +20,7 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x = this.x + Math.floor(((Math.random() * 350) + 1) * dt);
+    this.x = this.x + Math.floor(((Math.random() * 350) + 10) * dt);
     this.y;
 };
 
@@ -47,15 +43,18 @@ var player = function(x,y){
 	this.y = y;
 }
 
+//Update the player sprite position based on User input, win conditions, and collision conditions
 player.prototype.update = function(dt){
 	player.handleInput();
 	player.reset();
 };
 
+//Render the player sprite
 player.prototype.render = function(){
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+//Handles the player sprite based on key pressed
 player.prototype.handleInput = function(allowedKeys){
 	switch(allowedKeys){
 		case 'left':
@@ -84,16 +83,20 @@ player.prototype.handleInput = function(allowedKeys){
 	};
 };
 
+//Resets the player to the initial position and generates more enemies
+//if player wins or loses.
 player.prototype.reset = function(){
 	var winY = -45;
 	if(this.y === winY){
 		this.x = initialX;
 		this.y = initialY;
 		alert('Congratulations, you won!')
+		constructEnemies();
 	}
 	else if(collision()){
 		this.x = initialX;
 		this.y = initialY;
+		constructEnemies();
 	};
 };
 
@@ -101,15 +104,25 @@ player.prototype.reset = function(){
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
+
 var allEnemies = [];
-var length = Math.floor(Math.random() * 130);
-for(i=0; i < length; i++){
-	allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1,Math.floor(Math.random() * 200) + 40));
+
+//Creates fleet of enemies
+var constructEnemies = function() {
+var length = Math.floor(Math.random() * 50);
+	for(i=0; i < length; i++){
+		allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1, 210));
+		allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1, 125));
+		allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1, 40));
+	};
 };
+constructEnemies()
+
 var initialX = 200;
 var initialY = 380;
-var player = new player(initialX,initialY);
 
+//instantiates a new player character
+var player = new player(initialX,initialY);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -124,7 +137,7 @@ document.addEventListener('keyup', function(e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-//Collision Detection
+//Collision Detection between player and enemy objects
 var collision = function(){
 
 	for (var i=0; i<allEnemies.length; i++){
@@ -137,4 +150,4 @@ var collision = function(){
 			return true;
 		};
 	};
-}
+};
