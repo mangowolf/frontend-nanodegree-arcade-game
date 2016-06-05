@@ -7,4 +7,8 @@ For detailed instructions on how to get started, check out this [guide](https://
 
 How to load and play the game:
 
-1.
+1. Go to http://mangowolf.github.io/frontend-nanodegree-arcade-game/
+
+or
+
+2. If running the file locally, be sure to have the css, images, js, and index.html files in a single folder on your local drive. Then run the index.html file in your preferred browser.
