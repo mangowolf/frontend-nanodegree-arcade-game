@@ -1,3 +1,6 @@
+//Using Strict mode
+"use strict";
+
 // Enemies our player must avoid
 var Enemy = function(x,y) {
     // Variables applied to each of our instances go here,
@@ -32,7 +35,7 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var player = function(x,y){
+var Player = function(x,y){
 	var w = 40;
 	var h = 40;
 	//load character sprite using helper
@@ -44,18 +47,18 @@ var player = function(x,y){
 }
 
 //Update the player sprite position based on User input, win conditions, and collision conditions
-player.prototype.update = function(dt){
-	player.handleInput();
-	player.reset();
+Player.prototype.update = function(dt){
+	this.handleInput();
+	this.reset();
 };
 
 //Render the player sprite
-player.prototype.render = function(){
+Player.prototype.render = function(){
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
 //Handles the player sprite based on key pressed
-player.prototype.handleInput = function(allowedKeys){
+Player.prototype.handleInput = function(allowedKeys){
 	switch(allowedKeys){
 		case 'left':
 		if(this.x > 0){
@@ -85,7 +88,7 @@ player.prototype.handleInput = function(allowedKeys){
 
 //Resets the player to the initial position and generates more enemies
 //if player wins or loses.
-player.prototype.reset = function(){
+Player.prototype.reset = function(){
 	var winY = -45;
 	if(this.y === winY){
 		this.x = initialX;
@@ -93,10 +96,24 @@ player.prototype.reset = function(){
 		alert('Congratulations, you won!')
 		constructEnemies();
 	}
-	else if(collision()){
+	else if(this.collision()){
 		this.x = initialX;
 		this.y = initialY;
 		constructEnemies();
+	};
+};
+
+//Collision Detection between player and enemy objects
+Player.prototype.collision = function(){
+	var len = allEnemies.length;
+	for (var i=0; i<len; i++){
+		if(this.x < allEnemies[i].x + allEnemies[i].width &&
+			this.x + this.width > allEnemies[i].x &&
+			this.y < allEnemies[i].y + allEnemies[i].height &&
+			this.height + this.y > allEnemies[i].y){
+			alert('Game Over!');
+			return true;
+		};
 	};
 };
 
@@ -109,8 +126,8 @@ var allEnemies = [];
 
 //Creates fleet of enemies
 var constructEnemies = function() {
-var length = Math.floor(Math.random() * 50);
-	for(i=0; i < length; i++){
+var length = Math.floor(Math.random() * 15);
+	for(var i=0; i < length; i++){
 		allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1, 210));
 		allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1, 125));
 		allEnemies.push(new Enemy(Math.floor(Math.random() * -5800) + 1, 40));
@@ -122,7 +139,7 @@ var initialX = 200;
 var initialY = 380;
 
 //instantiates a new player character
-var player = new player(initialX,initialY);
+var player = new Player(initialX,initialY);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -136,18 +153,3 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
-//Collision Detection between player and enemy objects
-var collision = function(){
-
-	for (var i=0; i<allEnemies.length; i++){
-
-		if(player.x < allEnemies[i].x + allEnemies[i].width &&
-			player.x + player.width > allEnemies[i].x &&
-			player.y < allEnemies[i].y + allEnemies[i].height &&
-			player.height + player.y > allEnemies[i].y){
-			alert('Game Over!');
-			return true;
-		};
-	};
-};
